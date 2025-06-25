@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Gerador de Etiquetas</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Gerador de Etiqueta Disk&Tenha</h1>
+        <form action="/gerar-etiqueta" method="POST">
+            
+            <fieldset>
+                <legend>Dados do Cabeçalho</legend>
+                <div class="grid-2">
+                    <div>
+                        <label for="entregador_id">ID Entregador</label>
+                        <input type="text" id="entregador_id" name="entregador_id" required>
+                    </div>
+                    <div>
+                        <label for="entregador_nome">Nome Entregador</label>
+                        <input type="text" id="entregador_nome" name="entregador_nome" required>
+                    </div>
+                </div>
+                <label for="entregador_fone">Fone Entregador</label>
+                <input type="text" id="entregador_fone" name="entregador_fone" required>
+                <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid #eee;">
+                <div class="grid-2">
+                    <div>
+                        <label for="coletor_id">ID Coletor</label>
+                        <input type="text" id="coletor_id" name="coletor_id" required>
+                    </div>
+                    <div>
+                        <label for="coletor_nome">Nome Coletor</label>
+                        <input type="text" id="coletor_nome" name="coletor_nome" required>
+                    </div>
+                </div>
+                <label for="coletor_fone">Fone Coletor</label>
+                <input type="text" id="coletor_fone" name="coletor_fone" required>
+            </fieldset>
+
+            <fieldset>
+                <legend>Destinatário</legend>
+                <label for="dest_nome">Nome Completo</label>
+                <input type="text" id="dest_nome" name="dest_nome" required>
+                <label for="dest_rua">Endereço</label>
+                <input type="text" id="dest_rua" name="dest_rua" required>
+                <label for="dest_bairro">Bairro</label>
+                <input type="text" id="dest_bairro" name="dest_bairro" required>
+                <label for="dest_cep">CEP</label>
+                <input type="text" id="dest_cep" name="dest_cep" required>
+                <label for="dest_fone">Telefone</label>
+                <input type="text" id="dest_fone" name="dest_fone" required>
+            </fieldset>
+
+            <fieldset>
+                <legend>Remetente</legend>
+                <label for="remet_nome">Nome Completo</label>
+                <input type="text" id="remet_nome" name="remet_nome" required>
+                <label for="remet_rua">Endereço</label>
+                <input type="text" id="remet_rua" name="remet_rua" required>
+                <label for="remet_bairro">Bairro</label>
+                <input type="text" id="remet_bairro" name="remet_bairro" required>
+                <label for="remet_cep">CEP</label>
+                <input type="text" id="remet_cep" name="remet_cep" required>
+                <label for="remet_fone">Telefone</label>
+                <input type="text" id="remet_fone" name="remet_fone" required>
+            </fieldset>
+
+            <fieldset>
+                <legend>Dados da Etiqueta</legend>
+                <label for="barcode_text">Texto do Código de Barras</label>
+                <input type="text" id="barcode_text" name="barcode_text" required>
+            </fieldset>
+
+            <button type="submit">Gerar e Baixar Etiqueta</button>
+        </form>
+    </div>
+</body>
+</html>
