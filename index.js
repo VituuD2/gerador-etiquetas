@@ -6,7 +6,6 @@ const fs = require('fs');
 const app = express();
 
 // --- Middlewares ---
-// A configuração do servidor (middlewares e rotas) deve vir ANTES de app.listen.
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 
@@ -27,6 +26,7 @@ function drawInvertedTitle(doc, text, y) {
 // --- Rota Principal para Gerar a Etiqueta de Forma Dinâmica ---
 app.post('/gerar-etiqueta', async (req, res) => {
     try {
+        // Objeto de dados montado a partir do seu novo HTML
         const labelData = {
             logoPath: './logo.png',
             entregador: { 
@@ -41,18 +41,18 @@ app.post('/gerar-etiqueta', async (req, res) => {
             },
             destinatario: {
                 nome: req.body.dest_nome,
-                // CORREÇÃO: Usando os nomes corretos do formulário
-                endereco1: req.body.dest_end1,
-                endereco2: req.body.dest_end2,
-                cep: req.body.dest_cep, // Este campo será adicionado ao HTML
+                // MUDANÇA AQUI: Lendo os novos nomes dos campos do HTML
+                rua: req.body.dest_rua,
+                bairro: req.body.dest_bairro,
+                cep: req.body.dest_cep,
                 fone: req.body.dest_fone
             },
             remetente: {
                 nome: req.body.remet_nome,
-                // CORREÇÃO: Usando os nomes corretos do formulário
-                endereco1: req.body.remet_end1,
-                endereco2: req.body.remet_end2,
-                cep: req.body.remet_cep, // Este campo será adicionado ao HTML
+                // MUDANÇA AQUI: Lendo os novos nomes dos campos do HTML
+                rua: req.body.remet_rua,
+                bairro: req.body.remet_bairro,
+                cep: req.body.remet_cep,
                 fone: req.body.remet_fone
             },
             barcode: req.body.barcode_text
@@ -89,9 +89,10 @@ app.post('/gerar-etiqueta', async (req, res) => {
         doc.font('Helvetica-Bold').fontSize(11).text('COLETOR');
         doc.font('Helvetica').fontSize(10).text(`${labelData.coletor.id} ${labelData.coletor.nome} ${labelData.coletor.fone}`);
 
-        // Seção Destinatário (com quebra de linha para o CEP)
+        // Seção Destinatário
         drawInvertedTitle(doc, 'DESTINATÁRIO', 100);
-        const enderecoDestinatario = `${labelData.destinatario.endereco1}\n${labelData.destinatario.endereco2}\nCEP: ${labelData.destinatario.cep}\n${labelData.destinatario.fone}`;
+        // MUDANÇA AQUI: Montando a string de endereço com os novos campos
+        const enderecoDestinatario = `${labelData.destinatario.rua}\n${labelData.destinatario.bairro}\nCEP: ${labelData.destinatario.cep}\n${labelData.destinatario.fone}`;
         doc.font('Helvetica-Bold').fontSize(12).text(labelData.destinatario.nome, margin, 130);
         doc.font('Helvetica').fontSize(11).text(enderecoDestinatario, margin, doc.y, { lineGap: 2 });
         
@@ -102,9 +103,10 @@ app.post('/gerar-etiqueta', async (req, res) => {
         doc.font('Helvetica-Bold').fontSize(14).text(labelData.barcode, 0, 215, { align: 'center' });
         doc.image(barcodeBuffer, (pageW - 180) / 2, 235, { width: 180 });
 
-        // Seção Remetente (com quebra de linha para o CEP)
+        // Seção Remetente
         doc.font('Helvetica-Bold').fontSize(12).text('REMETENTE', margin, 340);
-        const enderecoRemetente = `${labelData.remetente.endereco1}\n${labelData.remetente.endereco2}\nCEP: ${labelData.remetente.cep}\n${labelData.remetente.fone}`;
+        // MUDANÇA AQUI: Montando a string de endereço com os novos campos
+        const enderecoRemetente = `${labelData.remetente.rua}\n${labelData.remetente.bairro}\nCEP: ${labelData.remetente.cep}\n${labelData.remetente.fone}`;
         doc.moveDown(0.5);
         doc.font('Helvetica').fontSize(9).text(labelData.remetente.nome, margin, doc.y);
         doc.text(enderecoRemetente, margin, doc.y, { lineGap: 2 });
@@ -119,7 +121,6 @@ app.post('/gerar-etiqueta', async (req, res) => {
 
 
 // --- Iniciar o Servidor ---
-// CORREÇÃO: Este é o ÚNICO local onde app.listen deve ser chamado.
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
