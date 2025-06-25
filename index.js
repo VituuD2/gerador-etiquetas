@@ -1,52 +1,32 @@
 const express = require('express');
 const PDFDocument = require('pdfkit');
 const bwipjs = require('bwip-js');
-const fs = require('fs'); // Módulo 'File System' para verificar se o logo existe
+const fs = require('fs');
 
-// --- Configuração do Servidor ---
 const app = express();
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-    if (PORT === 3000) {
-        console.log(`Abra o formulário em http://localhost:${PORT}`);
-    }
-});
 
 // --- Middlewares ---
-// Para servir arquivos estáticos da pasta 'public' (nosso novo index.html)
+// A configuração do servidor (middlewares e rotas) deve vir ANTES de app.listen.
 app.use(express.static('public'));
-// Para conseguir ler os dados enviados pelo formulário HTML via POST
 app.use(express.urlencoded({ extended: true }));
 
 
 // --- Funções Auxiliares de Desenho (sem alterações) ---
-
 function drawOuterBorder(doc) {
-    doc.rect(5, 5, doc.page.width - 10, doc.page.height - 10)
-       .lineWidth(3)
-       .stroke();
+    doc.rect(5, 5, doc.page.width - 10, doc.page.height - 10).lineWidth(3).stroke();
 }
-
 function drawHorizontalLine(doc, y) {
-    doc.moveTo(5, y)
-       .lineTo(doc.page.width - 5, y)
-       .lineWidth(3)
-       .stroke();
+    doc.moveTo(5, y).lineTo(doc.page.width - 5, y).lineWidth(3).stroke();
 }
-
 function drawInvertedTitle(doc, text, y) {
     doc.rect(15, y, doc.page.width - 30, 20).fill('black');
     doc.fill('white').font('Helvetica-Bold').fontSize(12).text(text, 15, y + 5, { align: 'center' });
     doc.fill('black');
 }
 
-
 // --- Rota Principal para Gerar a Etiqueta de Forma Dinâmica ---
 app.post('/gerar-etiqueta', async (req, res) => {
     try {
-        // PASSO 1: Capturar os dados do formulário (req.body) e montá-los em um objeto.
-        // Os nomes (ex: 'entregador_nome') devem corresponder exatamente ao atributo 'name' dos inputs no HTML.
         const labelData = {
             logoPath: './logo.png',
             entregador: { 
@@ -61,23 +41,22 @@ app.post('/gerar-etiqueta', async (req, res) => {
             },
             destinatario: {
                 nome: req.body.dest_nome,
-                endereco1: req.body.dest_rua,
-                endereco2: req.body.dest_bairro,
-                cep: req.body.dest_cep,
+                // CORREÇÃO: Usando os nomes corretos do formulário
+                endereco1: req.body.dest_end1,
+                endereco2: req.body.dest_end2,
+                cep: req.body.dest_cep, // Este campo será adicionado ao HTML
                 fone: req.body.dest_fone
             },
             remetente: {
                 nome: req.body.remet_nome,
-                endereco1: req.body.remet_rua,
-                endereco2: req.body.remet_bairro,
-                cep: req.body.remet_cep,
+                // CORREÇÃO: Usando os nomes corretos do formulário
+                endereco1: req.body.remet_end1,
+                endereco2: req.body.remet_end2,
+                cep: req.body.remet_cep, // Este campo será adicionado ao HTML
                 fone: req.body.remet_fone
             },
             barcode: req.body.barcode_text
         };
-        
-        // PASSO 2: A lógica de desenho é EXATAMENTE A MESMA de antes.
-        // A única diferença é que agora ela usa o objeto `labelData` preenchido dinamicamente.
         
         const doc = new PDFDocument({
             size: [283.46, 425.20], 
@@ -110,34 +89,25 @@ app.post('/gerar-etiqueta', async (req, res) => {
         doc.font('Helvetica-Bold').fontSize(11).text('COLETOR');
         doc.font('Helvetica').fontSize(10).text(`${labelData.coletor.id} ${labelData.coletor.nome} ${labelData.coletor.fone}`);
 
-        // Seção Destinatário
+        // Seção Destinatário (com quebra de linha para o CEP)
         drawInvertedTitle(doc, 'DESTINATÁRIO', 100);
+        const enderecoDestinatario = `${labelData.destinatario.endereco1}\n${labelData.destinatario.endereco2}\nCEP: ${labelData.destinatario.cep}\n${labelData.destinatario.fone}`;
         doc.font('Helvetica-Bold').fontSize(12).text(labelData.destinatario.nome, margin, 130);
-        doc.font('Helvetica').fontSize(11).text(labelData.destinatario.endereco1, margin, doc.y);
-        doc.text(labelData.destinatario.endereco2, margin, doc.y);
-        doc.text(labelData.destinatario.cep, margin, doc.y);
-        doc.text(labelData.destinatario.fone, margin, doc.y);
+        doc.font('Helvetica').fontSize(11).text(enderecoDestinatario, margin, doc.y, { lineGap: 2 });
         
         // Seção Código de Barras
         const barcodeBuffer = await bwipjs.toBuffer({
-            bcid: 'code128',
-            text: labelData.barcode,
-            scale: 3,
-            height: 15,
-            includetext: false,
+            bcid: 'code128', text: labelData.barcode, scale: 3, height: 15, includetext: false,
         });
-
         doc.font('Helvetica-Bold').fontSize(14).text(labelData.barcode, 0, 215, { align: 'center' });
         doc.image(barcodeBuffer, (pageW - 180) / 2, 235, { width: 180 });
 
-        // Seção Remetente
+        // Seção Remetente (com quebra de linha para o CEP)
         doc.font('Helvetica-Bold').fontSize(12).text('REMETENTE', margin, 340);
+        const enderecoRemetente = `${labelData.remetente.endereco1}\n${labelData.remetente.endereco2}\nCEP: ${labelData.remetente.cep}\n${labelData.remetente.fone}`;
         doc.moveDown(0.5);
         doc.font('Helvetica').fontSize(9).text(labelData.remetente.nome, margin, doc.y);
-        doc.text(labelData.remetente.endereco1, margin, doc.y);
-        doc.text(labelData.remetente.endereco2, margin, doc.y);
-        doc.text(labelData.remetente.cep, margin, doc.y);
-        doc.text(labelData.remetente.fone, margin, doc.y);
+        doc.text(enderecoRemetente, margin, doc.y, { lineGap: 2 });
 
         doc.end();
 
@@ -149,6 +119,11 @@ app.post('/gerar-etiqueta', async (req, res) => {
 
 
 // --- Iniciar o Servidor ---
-app.listen(port, () => {
-    console.log(`Servidor rodando! Abra o formulário em http://localhost:${port}`);
+// CORREÇÃO: Este é o ÚNICO local onde app.listen deve ser chamado.
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+    if (PORT === 3000) {
+        console.log(`Abra o formulário em http://localhost:${PORT}`);
+    }
 });
