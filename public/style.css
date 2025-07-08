@@ -73,3 +73,7 @@ button:hover {
 	grid-template-columns: 1fr 1fr;
 	gap: 1rem;
 }
+
+.hidden{
+	display: none;
+}

@@ -42,32 +42,53 @@
             </fieldset>
 
             <fieldset>
-                <legend>Destinatário</legend>
-                <label for="dest_nome">Nome Completo</label>
-                <input type="text" id="dest_nome" name="dest_nome" required>
-                <label for="dest_rua">Endereço</label>
-                <input type="text" id="dest_rua" name="dest_rua" required>
-                <label for="dest_bairro">Bairro</label>
-                <input type="text" id="dest_bairro" name="dest_bairro" required>
-                <label for="dest_cep">CEP</label>
-                <input type="text" id="dest_cep" name="dest_cep" required>
-                <label for="dest_fone">Telefone</label>
-                <input type="text" id="dest_fone" name="dest_fone" required>
-            </fieldset>
+    <legend>Destinatário</legend>
+    <label for="dest_cep">CEP</label>
+    <input type="text" id="dest_cep" name="dest_cep" required placeholder="Digite o CEP e aguarde">
+    
+    <div id="dest_address_fields" class="hidden"> 
+        <label for="dest_rua">Endereço</label>
+        <input type="text" id="dest_rua" name="dest_rua" required>
+        <label for="dest_bairro">Bairro</label>
+        <input type="text" id="dest_bairro" name="dest_bairro" required>
+        <label for="dest_cidade">Cidade</label>
+        <input type="text" id="dest_cidade" name="dest_cidade" required readonly> <label for="dest_uf">Estado</label>
+        <input type="text" id="dest_uf" name="dest_uf" required readonly>
+    </div>
 
-            <fieldset>
-                <legend>Remetente</legend>
-                <label for="remet_nome">Nome Completo</label>
-                <input type="text" id="remet_nome" name="remet_nome" required>
-                <label for="remet_rua">Endereço</label>
-                <input type="text" id="remet_rua" name="remet_rua" required>
-                <label for="remet_bairro">Bairro</label>
-                <input type="text" id="remet_bairro" name="remet_bairro" required>
-                <label for="remet_cep">CEP</label>
-                <input type="text" id="remet_cep" name="remet_cep" required>
-                <label for="remet_fone">Telefone</label>
-                <input type="text" id="remet_fone" name="remet_fone" required>
-            </fieldset>
+    <label for="dest_numero">Número</label>
+    <input type="text" id="dest_numero" name="dest_numero" required>
+    <label for="dest_complemento">Complemento (Opcional)</label>
+    <input type="text" id="dest_complemento" name="dest_complemento">
+    
+    <label for="dest_fone">Telefone</label>
+    <input type="text" id="dest_fone" name="dest_fone" required>
+</fieldset>
+
+<fieldset>
+    <legend>Remetente</legend>
+    <label for="remet_cep">CEP</label>
+    <input type="text" id="remet_cep" name="remet_cep" required placeholder="Digite o CEP e aguarde">
+    
+    <div id="remet_address_fields" class="hidden">
+        <label for="remet_rua">Endereço</label>
+        <input type="text" id="remet_rua" name="remet_rua" required>
+        <label for="remet_bairro">Bairro</label>
+        <input type="text" id="remet_bairro" name="remet_bairro" required>
+        <label for="remet_cidade">Cidade</label>
+        <input type="text" id="remet_cidade" name="remet_cidade" required readonly>
+        <label for="remet_uf">Estado</label>
+        <input type="text" id="remet_uf" name="remet_uf" required readonly>
+    </div>
+
+    <label for="remet_numero">Número</label>
+    <input type="text" id="remet_numero" name="remet_numero" required>
+    <label for="remet_complemento">Complemento (Opcional)</label>
+    <input type="text" id="remet_complemento" name="remet_complemento">
+
+    <label for="remet_fone">Telefone</label>
+    <input type="text" id="remet_fone" name="remet_fone" required>
+</fieldset>
 
             <fieldset>
                 <legend>Dados da Etiqueta</legend>
@@ -78,5 +99,6 @@
             <button type="submit">Gerar e Baixar Etiqueta</button>
         </form>
     </div>
+    <script defer src="main.js"></script>
 </body>
 </html>
