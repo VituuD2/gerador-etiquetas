@@ -1,0 +1,72 @@
+{
+  "entregadores": [
+    {
+      "codigo": "101",
+      "nome": "João da Silva",
+      "telefone": "(48) 99911-0101"
+    },
+    {
+      "codigo": "102",
+      "nome": "Maria Oliveira",
+      "telefone": "(48) 99922-0202"
+    },
+    {
+      "codigo": "762",
+      "nome": "Matheus",
+      "telefone": "(48) 98453-5642"
+    },
+    {
+      "codigo": "767",
+      "nome": "Valdir Carlos",
+      "telefone": "(48) 99940-2918"
+    },
+    {
+      "codigo": "762",
+      "nome": "Matheus",
+      "telefone": "(48) 98453-5642"
+    },
+    {
+      "codigo": "757",
+      "nome": "Eduardo",
+      "telefone": "(48) 99174-5747"
+    },
+    {
+      "codigo": "739",
+      "nome": "Ramon",
+      "telefone": "(48) 98477-9138"
+    },
+    {
+      "codigo": "736",
+      "nome": "Rony",
+      "telefone": "(48) 98855-6946"
+    },
+    {
+      "codigo": "722",
+      "nome": "Valerio",
+      "telefone": "(48) 98802-6316"
+    },
+    {
+      "codigo": "754",
+      "nome": "Filipe",
+      "telefone": "(48) 99955-3586"
+    }
+  ],
+  "contatos": [
+    {
+      "codigo": "CAD001",
+      "nome": "GUSTAVO MAGRO",
+      "rua": "SERVIDAO EUCLIDES SILVA 475 -  Piso 02 Sala 01",
+      "bairro": "ITACORUBI - FLORIANOPOLIS",
+      "cep": "88034-080",
+      "telefone": "47991521957"
+    },
+    {
+      "codigo": "CAD002",
+      "nome": "KARINA GALHANO",
+      "rua": "RUA PROFESSOR ABELARDO SOUZA 110",
+      "bairro": "BARRA DA LAGOA - FLORIANOPOLIS",
+      "cep": "88061-200",
+      "telefone": "51996468453"
+    }
+  ]
+}

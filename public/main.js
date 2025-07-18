@@ -67,3 +67,55 @@ document.getElementById('dest_cep').addEventListener('blur', (event) => {
 document.getElementById('remet_cep').addEventListener('blur', (event) => {
     buscarCep(event, 'remet');
 });
+
+const buscarCodigoFuncionario = async (event, prefixo) => {
+    // Pega o valor do campo de ID que disparou o evento
+    const codigo = event.target.value;
+
+    // Encontra os campos de nome e telefone que vamos preencher
+    const nomeInput = document.getElementById(`${prefixo}_nome`);
+    const foneInput = document.getElementById(`${prefixo}_fone`);
+
+    // Se o campo de código estiver vazio, limpa os campos de nome e fone
+    if (!codigo) {
+        nomeInput.value = '';
+        foneInput.value = '';
+        return;
+    }
+
+    try {
+        // Faz a chamada para a NOSSA API criada no backend
+        const response = await fetch(`/api/entregador/${codigo}`);
+
+        // Se a resposta não for "ok" (ex: erro 404 - não encontrado)
+        if (!response.ok) {
+            // Limpamos o nome e damos um feedback no campo de telefone
+            nomeInput.value = '';
+            foneInput.value = 'Código não encontrado';
+            return;
+        }
+
+        // Se deu tudo certo, pega a resposta e a transforma em um objeto JavaScript
+        const data = await response.json();
+
+        // Preenche os campos de nome e telefone com os dados recebidos
+        nomeInput.value = data.nome;
+        foneInput.value = data.telefone;
+
+    } catch (error) {
+        // Se houver um erro de rede, por exemplo
+        console.error('Erro ao buscar código do funcionário:', error);
+        nomeInput.value = '';
+        foneInput.value = 'Erro na busca.';
+    }
+};
+
+// Para o Entregador
+document.getElementById('entregador_id').addEventListener('blur', (event) => {
+    buscarCodigoFuncionario(event, 'entregador');
+});
+
+// Para o Coletor
+document.getElementById('coletor_id').addEventListener('blur', (event) => {
+    buscarCodigoFuncionario(event, 'coletor');
+});

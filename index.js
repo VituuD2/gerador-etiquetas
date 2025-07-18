@@ -1,7 +1,12 @@
 const express = require('express');
+const fs = require('fs');
 const PDFDocument = require('pdfkit');
 const bwipjs = require('bwip-js');
-const fs = require('fs');
+
+// --- Carregamento do Banco de Dados ---
+// Lemos o arquivo e o transformamos em um objeto JavaScript utilizável.
+const databaseText = fs.readFileSync('./data/database.json');
+const database = JSON.parse(databaseText);
 
 const app = express();
 
@@ -23,10 +28,24 @@ function drawInvertedTitle(doc, text, y) {
     doc.fill('black');
 }
 
-// --- Rota Principal para Gerar a Etiqueta de Forma Dinâmica ---
+
+// --- API Endpoint para buscar um entregador pelo código (VERSÃO CORRIGIDA) ---
+app.get('/api/entregador/:codigo', (req, res) => {
+    const { codigo } = req.params;
+    const entregador = database.entregadores.find(e => e.codigo === codigo);
+
+    if (entregador) {
+        res.json(entregador);
+    } else {
+        res.status(404).json({ error: 'Entregador não encontrado' });
+    }
+});
+
+
+// --- Rota Principal para Gerar a Etiqueta (VERSÃO CORRIGIDA) ---
+// Note que agora só temos UMA definição de app.post
 app.post('/gerar-etiqueta', async (req, res) => {
     try {
-        // Objeto de dados montado a partir do seu novo HTML
         const labelData = {
             logoPath: './logo.png',
             entregador: { 
@@ -41,7 +60,6 @@ app.post('/gerar-etiqueta', async (req, res) => {
             },
             destinatario: {
                 nome: req.body.dest_nome,
-                // MUDANÇA AQUI: Lendo os novos nomes dos campos do HTML
                 rua: req.body.dest_rua,
                 bairro: req.body.dest_bairro,
                 cep: req.body.dest_cep,
@@ -49,7 +67,6 @@ app.post('/gerar-etiqueta', async (req, res) => {
             },
             remetente: {
                 nome: req.body.remet_nome,
-                // MUDANÇA AQUI: Lendo os novos nomes dos campos do HTML
                 rua: req.body.remet_rua,
                 bairro: req.body.remet_bairro,
                 cep: req.body.remet_cep,
@@ -91,7 +108,6 @@ app.post('/gerar-etiqueta', async (req, res) => {
 
         // Seção Destinatário
         drawInvertedTitle(doc, 'DESTINATÁRIO', 100);
-        // MUDANÇA AQUI: Montando a string de endereço com os novos campos
         const enderecoDestinatario = `${labelData.destinatario.rua}\n${labelData.destinatario.bairro}\nCEP: ${labelData.destinatario.cep}\n${labelData.destinatario.fone}`;
         doc.font('Helvetica-Bold').fontSize(12).text(labelData.destinatario.nome, margin, 130);
         doc.font('Helvetica').fontSize(11).text(enderecoDestinatario, margin, doc.y, { lineGap: 2 });
@@ -105,7 +121,6 @@ app.post('/gerar-etiqueta', async (req, res) => {
 
         // Seção Remetente
         doc.font('Helvetica-Bold').fontSize(12).text('REMETENTE', margin, 340);
-        // MUDANÇA AQUI: Montando a string de endereço com os novos campos
         const enderecoRemetente = `${labelData.remetente.rua}\n${labelData.remetente.bairro}\nCEP: ${labelData.remetente.cep}\n${labelData.remetente.fone}`;
         doc.moveDown(0.5);
         doc.font('Helvetica').fontSize(9).text(labelData.remetente.nome, margin, doc.y);
@@ -118,7 +133,6 @@ app.post('/gerar-etiqueta', async (req, res) => {
         res.status(500).send('Ocorreu um erro ao gerar a etiqueta.');
     }
 });
-
 
 // --- Iniciar o Servidor ---
 const PORT = process.env.PORT || 3000;
