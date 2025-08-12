@@ -79,12 +79,22 @@
       "codigo": "709",
       "nome": "Leandro",
       "telefone": "(48) 99621-6875"
+    },
+    {
+      "codigo": "756",
+      "nome": "Elivan",
+      "telefone": "(48) 99806-1374"
+    },
+    {
+      "codigo": "726",
+      "nome": "Tiago",
+      "telefone": "(48) 98423-8658"
     }
   ],
   "contatos": [
     {
       "codigo": "CAD001",
-      "nome": "GUSTAVO MAGRO",
+      "nome": "SOUL BM",
       "rua": "SERVIDAO EUCLIDES SILVA 475 -  Piso 02 Sala 01",
       "bairro": "ITACORUBI - FLORIANOPOLIS",
       "cep": "88034-080",
